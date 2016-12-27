@@ -8,10 +8,9 @@
  * Controller of the demoApp
  */
 angular.module('demoApp')
-  .controller('MainCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-  });
+  .controller('MainCtrl', ['$scope', function ($scope) {
+    
+    $scope.addElement = function(element) {
+    	console.log(element);
+    };
+  }]);
