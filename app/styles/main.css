@@ -87,3 +87,7 @@ body {
   height: 500px;
   border: 1px solid #000;
 }
+
+ul li:hover {
+  cursor: pointer;
+}

@@ -12,6 +12,12 @@
 
       link: function(scope, element) {
         
+        function create() {
+          
+          console.log('createRectangle function')
+        }
+
+        scope.createRectangle = create.bind(null);
       }
 
     };

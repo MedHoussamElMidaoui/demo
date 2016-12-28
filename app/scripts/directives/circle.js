@@ -12,6 +12,12 @@
 
       link: function(scope, element) {
         
+        function create() {
+          
+          console.log('createCircle function')
+        }
+
+        scope.createCircle = create.bind(null);
       }
 
     };

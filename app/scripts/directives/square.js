@@ -12,6 +12,12 @@
 
       link: function(scope, element) {
         
+        function create() {
+          
+          console.log('createSquare function')
+        }
+
+        scope.createSquare = create.bind(null);
       }
 
     };
