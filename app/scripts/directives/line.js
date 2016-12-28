@@ -12,6 +12,7 @@
 
       link: function(scope) {
 
+        var index = 0;
         var canvas = scope.canvas;
         var svg = scope.svg;
         var config = {
@@ -19,24 +20,23 @@
           radius1: 3,
           radius2: 6
         };
+        var color = d3.schemeCategory20c;
+        var borders = {
+          top: 5,
+          right: scope.canvasWidth - 5,
+          bottom: scope.canvasHeight - 5,
+          left: 5
+        };
 
         function createLine(line) {
 
           var lineElement = svg.append('line')
-          .attr('x1', function() {
-            return line.point1.x;
-          })
-          .attr('y1', function() {
-            return line.point1.y;
-          })
-          .attr('x2', function(d, i) {
-            return line.point2.x;
-          })
-          .attr('y2', function(d, i) {
-            return line.point2.y;
-          })
+          .attr('x1', line.point1.x)
+          .attr('y1', line.point1.y)
+          .attr('x2', line.point2.x)
+          .attr('y2', line.point2.y)
           .attr("stroke-width", config.strokeWidth)
-          .style('stroke', '#000')
+          .style('stroke', color[index  % 20])
           .style('cursor', 'move');
 
           return lineElement;
@@ -44,20 +44,24 @@
 
         function lineEvents(line, circle1, circle2) {
 
-          line.call(d3.drag()
+          line.on('dblclick', function() {
+            line.remove();
+            circle1.remove();
+            circle2.remove();
+          })
+          .call(d3.drag()
             .on('drag', function() {
-              var mouse = d3.mouse(canvas);
-
+              
               var newCoordinates = {
                 x1: parseFloat(circle1.attr('cx')) + d3.event.dx,
                 y1: parseFloat(circle1.attr('cy')) + d3.event.dy,
                 x2: parseFloat(circle2.attr('cx')) + d3.event.dx,
                 y2: parseFloat(circle2.attr('cy')) + d3.event.dy
               };
-              if(newCoordinates.x1 + config.radius1 > 0 && newCoordinates.x1 + config.radius1 < scope.canvasWidth
-                && newCoordinates.x2 + config.radius1 > 0 && newCoordinates.x2 + config.radius1 < scope.canvasWidth
-                && newCoordinates.y1 + config.radius1 > 0 && newCoordinates.y1 + config.radius1 < scope.canvasHeight
-                && newCoordinates.y2 + config.radius1 > 0 && newCoordinates.y2 + config.radius1 < scope.canvasHeight) {
+              if(newCoordinates.x1 - config.radius1 > borders.left && newCoordinates.x1 + config.radius1 < borders.right
+                && newCoordinates.x2 - config.radius1 > borders.left && newCoordinates.x2 + config.radius1 < borders.right
+                && newCoordinates.y1 - config.radius1 > borders.top && newCoordinates.y1 + config.radius1 < borders.bottom
+                && newCoordinates.y2 - config.radius1 > borders.top && newCoordinates.y2 + config.radius1 < borders.bottom) {
 
                 circle1.attr('cx', newCoordinates.x1)
                 .attr('cy', newCoordinates.y1);
@@ -78,7 +82,8 @@
           var circleElement = svg.append('circle')
           .attr('cx', point.x)
           .attr('cy', point.y)
-          .attr('r', config.radius1);
+          .attr('r', config.radius1)
+          .style('fill', color[index  % 20]);
 
           return circleElement;
         }
@@ -94,7 +99,8 @@
           .call(d3.drag()
             .on("drag", function() {
               var mouse = d3.mouse(canvas);
-              if(mouse[0]-config.radius1 > 0 && mouse[0]+config.radius1 < scope.canvasWidth && mouse[1]-config.radius1 > 0 && mouse[1]+config.radius1 < scope.canvasHeight) {
+              if(mouse[0]-config.radius1 > borders.left && mouse[0]+config.radius1 < borders.right 
+                && mouse[1]-config.radius1 > borders.top && mouse[1]+config.radius1 < borders.bottom) {
                 circle.attr('cx', mouse[0]);
                 circle.attr('cy', mouse[1]);
                 line.attr('x'+side, mouse[0]);
@@ -117,6 +123,8 @@
           lineEvents(lineElement, circleElement1, circleElement2);
           circleEvents(circleElement1, lineElement, 1);
           circleEvents(circleElement2, lineElement, 2);
+
+          index++;
         }
 
         scope.createLine = create.bind(null);

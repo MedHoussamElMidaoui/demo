@@ -11,8 +11,8 @@
  .controller('MainCtrl', ['$scope', function ($scope) {
 
   	$scope.canvas = document.getElementById('myCanvas');
-  	$scope.canvasWidth = $scope.canvas.clientWidth;
-  	$scope.canvasHeight = $scope.canvas.clientHeight;
+  	$scope.canvasWidth = $scope.canvas.clientWidth - 5;
+  	$scope.canvasHeight = $scope.canvas.clientHeight - 5;
 
   	$scope.svg = d3.select('#myCanvas')
   	.append('svg')
