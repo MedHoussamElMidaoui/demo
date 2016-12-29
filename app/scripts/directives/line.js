@@ -51,7 +51,7 @@
           })
           .call(d3.drag()
             .on('drag', function() {
-              
+
               var newCoordinates = {
                 x1: parseFloat(circle1.attr('cx')) + d3.event.dx,
                 y1: parseFloat(circle1.attr('cy')) + d3.event.dy,
@@ -83,7 +83,7 @@
           .attr('cx', point.x)
           .attr('cy', point.y)
           .attr('r', config.radius1)
-          .style('fill', color[index  % 20]);
+          .style('fill', '#000');
 
           return circleElement;
         }
@@ -112,7 +112,12 @@
         function create() {
 
           //Create the object
-          var line = new mainSvc.Line(scope.canvasWidth, scope.canvasHeight);
+          var line, d = 0;
+          while(d < 20) {
+
+            line = new mainSvc.Line(scope.canvasWidth, scope.canvasHeight);
+            d = Math.sqrt(Math.pow((line.point2.x - line.point1.x), 2) + Math.pow((line.point2.y - line.point1.y), 2));
+          }
 
           //Create Elements
           var lineElement = createLine(line);
