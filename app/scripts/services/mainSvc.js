@@ -37,6 +37,15 @@ angular.module('demoApp').factory('mainSvc', function() {
         	var d = Math.min(Math.floor(Math.random() * (width - this.point.x)), Math.floor(Math.random() * (height - this.point.y)));
         	this.width = d;
         	this.height = d;
+        },
+
+        Circle: function circleConstruct(width, height) {
+        	this.name = 'circle';
+        	this.point = {
+        		x : Math.floor(Math.random() * width),
+          		y : Math.floor(Math.random() * height)
+        	};
+        	this.radius = Math.min(Math.floor(Math.random() * Math.min(width - this.point.x, this.point.x)), Math.floor(Math.random() * Math.min(height - this.point.y, this.point.y)));
         }
 	};
 

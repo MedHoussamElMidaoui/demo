@@ -20,7 +20,7 @@
           radius1: 2,
           radius2: 4
         };
-        var color = d3.schemeCategory20c;
+        var color = d3.schemeCategory20b;
         var borders = {
           top: 5,
           right: scope.canvasWidth - 5,

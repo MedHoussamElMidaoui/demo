@@ -16,7 +16,7 @@
         var canvas = scope.canvas;
         var svg = scope.svg;
         var config = {
-          strokeWidth : 4,
+          strokeWidth : 2,
           radius1: 3,
           radius2: 6
         };
