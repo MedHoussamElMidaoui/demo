@@ -155,7 +155,7 @@
           //Create the object
           var rectangle = {width: 0, height: 0};
 
-          while(rectangle.width < 50 || rectangle.height < 50) {
+          while(rectangle.width < 20 || rectangle.height < 20) {
 
             rectangle = new mainSvc.Rectangle(scope.canvasWidth, scope.canvasHeight);
           }
