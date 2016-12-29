@@ -7,6 +7,8 @@
 
 body {
   padding: 0;
+  background: url('../images/bg.png') fixed repeat;
+  color: #fff;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -19,23 +21,22 @@ body {
 
 /* Custom page header */
 .header {
-  border-bottom: 1px solid #e5e5e5;
-  margin-bottom: 10px;
+  border-bottom: 1px solid #fff;
+  background: #610d0d;
 }
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
   margin-top: 0;
   margin-bottom: 0;
-  line-height: 40px;
+  line-height: 100px;
   padding-bottom: 19px;
+  font-size: 25pt;
+  font-family: initial;
+  text-align: center;
+  letter-spacing: 1px;
 }
 
 /* Custom page footer */
-.footer {
-  padding-top: 19px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
-}
 
 .container-narrow > hr {
   margin: 30px 0;
@@ -72,10 +73,6 @@ body {
     padding-left: 0;
     padding-right: 0;
   }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
   /* Remove the bottom border on the jumbotron for visual effect */
   .jumbotron {
     border-bottom: 0;
@@ -84,10 +81,40 @@ body {
 
 #myCanvas {
   width: 100%;
-  height: 500px;
+  height: 680px;
   border: 1px solid #000;
+  background: #fff
 }
 
 ul li:hover {
   cursor: pointer;
+}
+
+.footer {
+  padding-top: 19px;
+  border-top: 1px solid #fff;
+  background: #610d0d;
+}
+
+.footer h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 20px;
+  padding-bottom: 19px;
+  font-size: 11pt;
+  font-family: initial;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.container {
+  width: 90%;
+  padding: 0px;
+}
+
+.myContainer {
+  background: #f1dddd;
+  padding: 15px;
+  border-right: 1px solid #610d0d;
+  border-left: 1px solid #610d0d;
 }
