@@ -118,3 +118,22 @@ ul li:hover {
   border-right: 1px solid #610d0d;
   border-left: 1px solid #610d0d;
 }
+
+ul {
+  display: flex;
+  color: #610d0d;
+  letter-spacing: 1px;
+  font-family: cursive;
+  font-size: 12pt;
+  margin: 20px;
+
+}
+
+ul li {
+  list-style: none;
+  margin-left: 15%;
+}
+
+ul li:hover {
+  text-decoration: overline;
+}
