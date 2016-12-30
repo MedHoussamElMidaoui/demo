@@ -2,8 +2,6 @@
 
   'use strict';
 
-  app.directive('square', squareDirective);
-
   /* @ngInject */
   function squareDirective(mainSvc) {
     return {
@@ -13,12 +11,11 @@
       link: function(scope) {
         
         var index = 0;
-        var canvas = scope.canvas;
         var svg = scope.svg;
         var config = {
           strokeWidth : 4,
-          radius1: 2,
-          radius2: 4
+          radius1: 3,
+          radius2: 6
         };
         var color = d3.schemeCategory20b;
         var borders = {
@@ -36,8 +33,10 @@
           .attr('width', square.width)
           .attr('height', square.height)
           .style('fill', color[index  % 20])
+          .style('fill-opacity', '0.4')
           .style('cursor', 'move')
-          .style('stroke', '#000');
+          .style('stroke', '#000')
+          .style('stroke-width', '2px');
 
           return squareElement;
         }
@@ -60,8 +59,7 @@
                 width: parseFloat(square.attr('width')),
                 height: parseFloat(square.attr('height'))
               };
-              if(newCoordinates.x > borders.left && newCoordinates.x + newCoordinates.width < borders.right
-                && newCoordinates.y > borders.top && newCoordinates.y + newCoordinates.height < borders.bottom) {
+              if(newCoordinates.x > borders.left && newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y > borders.top && newCoordinates.y + newCoordinates.height < borders.bottom) {
 
               square.attr('x', newCoordinates.x).attr('y', newCoordinates.y);
 
@@ -70,7 +68,7 @@
               circle3.attr('cx', newCoordinates.x).attr('cy', newCoordinates.y + newCoordinates.height);
               circle4.attr('cx', newCoordinates.x + newCoordinates.width).attr('cy', newCoordinates.y + newCoordinates.height);
             }
-          }))
+          }));
         }
 
         function createCircle(point, cursor) {
@@ -111,9 +109,11 @@
                 y: parseFloat(square.attr('y')) + d,
                 width: parseFloat(square.attr('width')) - d,
                 height: parseFloat(square.attr('height')) - d
-              }
+              };
 
-              if(newCoordinates.x > borders.left && newCoordinates.y > borders.top && newCoordinates.width > 20) setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              if(newCoordinates.x > borders.left && newCoordinates.y > borders.top && newCoordinates.width > 20) {
+                setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              } 
           }));
 
           circle2.call(d3.drag()
@@ -125,9 +125,11 @@
                 y: parseFloat(square.attr('y')) + d,
                 width: parseFloat(square.attr('width')) - d,
                 height: parseFloat(square.attr('height')) - d
-              }
+              };
 
-              if(newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y > borders.top && newCoordinates.width > 20) setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              if(newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y > borders.top && newCoordinates.width > 20) {
+                setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              }
           }));
 
           circle3.call(d3.drag()
@@ -139,9 +141,11 @@
                 y: parseFloat(square.attr('y')),
                 width: parseFloat(square.attr('width')) - d,
                 height: parseFloat(square.attr('height')) - d
-              }
+              };
 
-              if(newCoordinates.x > borders.left && newCoordinates.y + newCoordinates.height < borders.bottom && newCoordinates.width > 20) setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              if(newCoordinates.x > borders.left && newCoordinates.y + newCoordinates.height < borders.bottom && newCoordinates.width > 20) {
+                setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              }
           }));
 
           circle4.call(d3.drag()
@@ -153,9 +157,11 @@
                 y: parseFloat(square.attr('y')),
                 width: parseFloat(square.attr('width')) - d,
                 height: parseFloat(square.attr('height')) - d
-              }
+              };
 
-              if(newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y + newCoordinates.height < borders.bottom && newCoordinates.width > 20) setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              if(newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y + newCoordinates.height < borders.bottom && newCoordinates.width > 20) {
+                setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
+              }
           }));
         }
 
@@ -189,5 +195,7 @@
 
     };
   }
+
+  app.directive('square', squareDirective);
 
 }(angular.module('demoApp')));

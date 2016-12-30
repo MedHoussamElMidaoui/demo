@@ -2,8 +2,6 @@
 
   'use strict';
 
-  app.directive('line', lineDirective);
-
   /* @ngInject */
   function lineDirective(mainSvc) {
     return {
@@ -58,10 +56,7 @@
                 x2: parseFloat(circle2.attr('cx')) + d3.event.dx,
                 y2: parseFloat(circle2.attr('cy')) + d3.event.dy
               };
-              if(newCoordinates.x1 - config.radius1 > borders.left && newCoordinates.x1 + config.radius1 < borders.right
-                && newCoordinates.x2 - config.radius1 > borders.left && newCoordinates.x2 + config.radius1 < borders.right
-                && newCoordinates.y1 - config.radius1 > borders.top && newCoordinates.y1 + config.radius1 < borders.bottom
-                && newCoordinates.y2 - config.radius1 > borders.top && newCoordinates.y2 + config.radius1 < borders.bottom) {
+              if(newCoordinates.x1 - config.radius1 > borders.left && newCoordinates.x1 + config.radius1 < borders.right && newCoordinates.x2 - config.radius1 > borders.left && newCoordinates.x2 + config.radius1 < borders.right && newCoordinates.y1 - config.radius1 > borders.top && newCoordinates.y1 + config.radius1 < borders.bottom && newCoordinates.y2 - config.radius1 > borders.top && newCoordinates.y2 + config.radius1 < borders.bottom) {
 
                 circle1.attr('cx', newCoordinates.x1)
                 .attr('cy', newCoordinates.y1);
@@ -74,7 +69,7 @@
                 .attr('x2', newCoordinates.x2)
                 .attr('y2', newCoordinates.y2);
               }
-          }))
+          }));
         }
 
         function createCircle(point) {
@@ -99,14 +94,13 @@
           .call(d3.drag()
             .on("drag", function() {
               var mouse = d3.mouse(canvas);
-              if(mouse[0]-config.radius1 > borders.left && mouse[0]+config.radius1 < borders.right 
-                && mouse[1]-config.radius1 > borders.top && mouse[1]+config.radius1 < borders.bottom) {
+              if(mouse[0]-config.radius1 > borders.left && mouse[0]+config.radius1 < borders.right && mouse[1]-config.radius1 > borders.top && mouse[1]+config.radius1 < borders.bottom) {
                 circle.attr('cx', mouse[0]);
                 circle.attr('cy', mouse[1]);
                 line.attr('x'+side, mouse[0]);
                 line.attr('y'+side, mouse[1]);
               }
-            }))
+            }));
         }
 
         function create() {
@@ -137,5 +131,7 @@
 
     };
   }
+
+  app.directive('line', lineDirective);
 
 }(angular.module('demoApp')));

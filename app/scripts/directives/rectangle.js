@@ -2,8 +2,6 @@
 
   'use strict';
 
-  app.directive('rectangle', rectangleDirective);
-
   /* @ngInject */
   function rectangleDirective(mainSvc) {
     return {
@@ -13,12 +11,9 @@
       link: function(scope) {
 
         var index = 0;
-        var canvas = scope.canvas;
         var svg = scope.svg;
         var config = {
-          strokeWidth : 2,
-          radius1: 3,
-          radius2: 6
+          strokeWidth : 2
         };
         var color = d3.schemeCategory20c;
         var borders = {
@@ -36,6 +31,7 @@
           .attr('width', rectangle.width)
           .attr('height', rectangle.height)
           .style('fill', color[index  % 20])
+          .style('fill-opacity', '0.4')
           .style('cursor', 'move');
 
           return rectangleElement;
@@ -59,8 +55,7 @@
                 width: parseFloat(rectangle.attr('width')),
                 height: parseFloat(rectangle.attr('height'))
               };
-              if(newCoordinates.x > borders.left && newCoordinates.x + newCoordinates.width < borders.right
-                && newCoordinates.y > borders.top && newCoordinates.y + newCoordinates.height < borders.bottom) {
+              if(newCoordinates.x > borders.left && newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y > borders.top && newCoordinates.y + newCoordinates.height < borders.bottom) {
 
               rectangle.attr('x', newCoordinates.x).attr('y', newCoordinates.y);
 
@@ -69,7 +64,7 @@
               left.attr('x1', newCoordinates.x + newCoordinates.width).attr('y1', newCoordinates.y).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y + newCoordinates.height);
               bottom.attr('x1', newCoordinates.x).attr('y1', newCoordinates.y + newCoordinates.height).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y + newCoordinates.height);
             }
-          }))
+          }));
         }
 
         function createLine(point1, point2, cursor, name) {
@@ -179,5 +174,7 @@
 
     };
   }
+
+  app.directive('rectangle', rectangleDirective);
 
 }(angular.module('demoApp')));

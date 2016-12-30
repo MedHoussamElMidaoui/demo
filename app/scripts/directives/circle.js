@@ -2,8 +2,6 @@
 
   'use strict';
 
-  app.directive('circle', circleDirective);
-
   /* @ngInject */
   function circleDirective(mainSvc) {
     return {
@@ -13,7 +11,6 @@
       link: function(scope) {
         
         var index = 0;
-        var canvas = scope.canvas;
         var svg = scope.svg;
         var color = d3.schemeCategory20b;
         var borders = {
@@ -30,7 +27,8 @@
           .attr('cy', circle.point.y)
           .attr('r', circle.radius)
           .style('cursor', 'move')
-          .style('fill', color[index  % 20]);
+          .style('fill', color[index  % 20])
+          .style('fill-opacity', '0.4');
 
           return circleElement;
         }
@@ -49,8 +47,7 @@
                 y: parseFloat(circle.attr('cy')) + d3.event.dy,
                 radius: parseFloat(circle.attr('r'))
               };
-              if(newCoordinates.x + newCoordinates.radius < borders.right && newCoordinates.x - newCoordinates.radius > borders.left
-                && newCoordinates.y + newCoordinates.radius < borders.bottom && newCoordinates.y - newCoordinates.radius > borders.top) {
+              if(newCoordinates.x + newCoordinates.radius < borders.right && newCoordinates.x - newCoordinates.radius > borders.left && newCoordinates.y + newCoordinates.radius < borders.bottom && newCoordinates.y - newCoordinates.radius > borders.top) {
 
                 circle.attr('cx', newCoordinates.x).attr('cy', newCoordinates.y);
 
@@ -64,9 +61,11 @@
           var circleElement = svg.append('circle')
           .attr('cx', circle.point.x)
           .attr('cy', circle.point.y)
-          .attr('r', circle.radius + 3)
+          .attr('r', circle.radius + 1)
           .style('cursor', 'pointer')
-          .style('stroke', '#000');
+          .style('fill', 'transparent')
+          .style('stroke', '#000')
+          .style('stroke-width', '3px');
 
           return circleElement;
         }
@@ -82,7 +81,7 @@
 
             if(d > 20 && x + d < borders.right && x - d > borders.left && y + d < borders.bottom && y - d > borders.top) {
               circle.attr('r', d);
-              contour.attr('r', d + 3);
+              contour.attr('r', d + 1);
             }
           }));
         }
@@ -90,7 +89,7 @@
         function create() {
           
           //Create the object
-          var circle = {radius : 0}
+          var circle = {radius : 0};
           while(circle.radius < 20) {
 
             circle = new mainSvc.Circle(scope.canvasWidth, scope.canvasHeight);
@@ -113,5 +112,7 @@
 
     };
   }
+
+  app.directive('circle', circleDirective);
 
 }(angular.module('demoApp')));
