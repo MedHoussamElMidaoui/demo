@@ -40,12 +40,13 @@
           return lineElement;
         }
 
-        function lineEvents(line, circle1, circle2) {
+        function lineEvents(line, circle1, circle2, lineItem) {
 
           line.on('dblclick', function() {
             line.remove();
             circle1.remove();
             circle2.remove();
+            mainSvc.removeFromStorage(lineItem);
           })
           .call(d3.drag()
             .on('drag', function() {
@@ -69,7 +70,13 @@
                 .attr('x2', newCoordinates.x2)
                 .attr('y2', newCoordinates.y2);
               }
-          }));
+            })
+            .on('end', function() {
+              lineItem.point1 = {x: parseFloat(line.attr('x1')), y: parseFloat(line.attr('y1'))};
+              lineItem.point2 = {x: parseFloat(line.attr('x2')), y: parseFloat(line.attr('y2'))};
+
+              mainSvc.editInStorage(lineItem);
+            }));
         }
 
         function createCircle(point) {
@@ -83,7 +90,7 @@
           return circleElement;
         }
 
-        function circleEvents(circle, line, side) {
+        function circleEvents(circle, line, side, lineItem) {
 
           circle.on('mouseover', function() {
             circle.attr('r', config.radius2);
@@ -113,15 +120,18 @@
             d = Math.sqrt(Math.pow((line.point2.x - line.point1.x), 2) + Math.pow((line.point2.y - line.point1.y), 2));
           }
 
+          //Save Element 
+          line.index = mainSvc.addToStorage(line);
+
           //Create Elements
           var lineElement = createLine(line);
           var circleElement1 = createCircle(line.point1);
           var circleElement2 = createCircle(line.point2);
 
           //Add Events
-          lineEvents(lineElement, circleElement1, circleElement2);
-          circleEvents(circleElement1, lineElement, 1);
-          circleEvents(circleElement2, lineElement, 2);
+          lineEvents(lineElement, circleElement1, circleElement2, line);
+          circleEvents(circleElement1, lineElement, 1, line);
+          circleEvents(circleElement2, lineElement, 2, line);
 
           index++;
         }

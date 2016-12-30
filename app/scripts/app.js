@@ -15,9 +15,13 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'LocalStorageModule'
   ])
-  .config(function ($routeProvider) {
+  .config(function ($routeProvider, localStorageServiceProvider) {
+    
+    localStorageServiceProvider.setPrefix('demoApp').setDefaultToCookie(false);
+
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
