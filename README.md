@@ -9,6 +9,9 @@
 # Installing
 
 1- clone the project on local
+
 2- Run "npm install"
+
 3- Run "bower install"
+
 4- Run "grunt serve"
