@@ -1,3 +1,3 @@
-# demo
+# Installation
 
-This project is generated with [yo angular generator]
+1- clone the project on local
