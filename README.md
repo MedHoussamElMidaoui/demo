@@ -1,7 +1,9 @@
 # Prerequisites
 
 1- NodeJS
+
 2- Bower
+
 3- Grunt
 
 # Installing
