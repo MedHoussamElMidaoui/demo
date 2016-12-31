@@ -3,10 +3,9 @@
 angular.module('demoApp').factory('mainSvc', ['localStorageService', function(localStorageService) {
   var serviceInstance = {
 
-    storage: [],
-
     init: function() {
-      return {};
+      serviceInstance.storage = localStorageService.get('appStorage') || [];
+      return serviceInstance.storage;
     },
 
     Line: function lineConstruct(width, height){

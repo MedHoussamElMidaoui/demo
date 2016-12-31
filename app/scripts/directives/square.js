@@ -41,7 +41,7 @@
           return squareElement;
         }
 
-        function squareEvents(square, circle1, circle2, circle3, circle4) {
+        function squareEvents(square, circle1, circle2, circle3, circle4, squareItem) {
 
           square.on('dblclick', function() {
             square.remove();
@@ -49,6 +49,7 @@
             circle2.remove();
             circle3.remove();
             circle4.remove();
+            mainSvc.removeFromStorage(squareItem);
           })
           .call(d3.drag()
             .on('drag', function() {
@@ -68,6 +69,11 @@
               circle3.attr('cx', newCoordinates.x).attr('cy', newCoordinates.y + newCoordinates.height);
               circle4.attr('cx', newCoordinates.x + newCoordinates.width).attr('cy', newCoordinates.y + newCoordinates.height);
             }
+          })
+          .on('end', function() {
+            squareItem.point = {x: parseFloat(square.attr('x')), y: parseFloat(square.attr('y'))};
+
+            mainSvc.editInStorage(squareItem);
           }));
         }
 
@@ -98,7 +104,15 @@
           circle4.attr('cx', newCoordinates.x + newCoordinates.width).attr('cy', newCoordinates.y + newCoordinates.height);
         }
 
-        function circlesEvents(square, circle1, circle2, circle3, circle4) {
+        function endDrag(square, squareItem) {
+          squareItem.point = {x: parseFloat(square.attr('x')), y: parseFloat(square.attr('y'))};
+          squareItem.width = parseFloat(square.attr('width'));
+          squareItem.height = parseFloat(square.attr('height'));
+
+          mainSvc.editInStorage(squareItem);
+        }
+
+        function circlesEvents(square, circle1, circle2, circle3, circle4, squareItem) {
 
           circle1.call(d3.drag()
             .on('drag', function() {
@@ -114,6 +128,9 @@
               if(newCoordinates.x > borders.left && newCoordinates.y > borders.top && newCoordinates.width > 20) {
                 setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
               } 
+          })
+          .on('end', function() {
+            endDrag(square, squareItem)
           }));
 
           circle2.call(d3.drag()
@@ -130,6 +147,9 @@
               if(newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y > borders.top && newCoordinates.width > 20) {
                 setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
               }
+          })
+          .on('end', function() {
+            endDrag(square, squareItem)
           }));
 
           circle3.call(d3.drag()
@@ -146,6 +166,9 @@
               if(newCoordinates.x > borders.left && newCoordinates.y + newCoordinates.height < borders.bottom && newCoordinates.width > 20) {
                 setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
               }
+          })
+          .on('end', function() {
+            endDrag(square, squareItem)
           }));
 
           circle4.call(d3.drag()
@@ -162,17 +185,25 @@
               if(newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y + newCoordinates.height < borders.bottom && newCoordinates.width > 20) {
                 setAttributes(square, circle1, circle2, circle3, circle4, newCoordinates);
               }
+          })
+          .on('end', function() {
+            endDrag(square, squareItem)
           }));
         }
 
-        function create() {
+        function create(squareItem) {
           
           //Create the object
-          var square = {width: 0};
+          var square = squareItem;
+          if(!square) {
+            square = {width: 0};
 
-          while(square.width < 20) {
+            while(square.width < 20) {
 
-            square = new mainSvc.Square(scope.canvasWidth, scope.canvasHeight);
+              square = new mainSvc.Square(scope.canvasWidth, scope.canvasHeight);
+            }
+
+            square.index = mainSvc.addToStorage(square);
           }
 
           //Create Elements
@@ -183,8 +214,8 @@
           var circleElement4 = createCircle({x: square.point.x + square.width, y: square.point.y + square.height}, 'nw-resize');
 
           //Add Events
-          squareEvents(squareElement, circleElement1, circleElement2, circleElement3, circleElement4);
-          circlesEvents(squareElement, circleElement1, circleElement2, circleElement3, circleElement4);
+          squareEvents(squareElement, circleElement1, circleElement2, circleElement3, circleElement4, square);
+          circlesEvents(squareElement, circleElement1, circleElement2, circleElement3, circleElement4, square);
 
           index++;
 

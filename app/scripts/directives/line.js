@@ -107,21 +107,30 @@
                 line.attr('x'+side, mouse[0]);
                 line.attr('y'+side, mouse[1]);
               }
+            })
+            .on('end', function() {
+              lineItem.point1 = {x: parseFloat(line.attr('x1')), y: parseFloat(line.attr('y1'))};
+              lineItem.point2 = {x: parseFloat(line.attr('x2')), y: parseFloat(line.attr('y2'))};
+
+              mainSvc.editInStorage(lineItem);
             }));
         }
 
-        function create() {
+        function create(lineItem) {
 
           //Create the object
-          var line, d = 0;
-          while(d < 20) {
+          var line = lineItem;
+          if(!line) {
+            var d = 0;
+            while(d < 20) {
 
-            line = new mainSvc.Line(scope.canvasWidth, scope.canvasHeight);
-            d = Math.sqrt(Math.pow((line.point2.x - line.point1.x), 2) + Math.pow((line.point2.y - line.point1.y), 2));
+              line = new mainSvc.Line(scope.canvasWidth, scope.canvasHeight);
+              d = Math.sqrt(Math.pow((line.point2.x - line.point1.x), 2) + Math.pow((line.point2.y - line.point1.y), 2));
+            }
+
+            //Save Element 
+            line.index = mainSvc.addToStorage(line);
           }
-
-          //Save Element 
-          line.index = mainSvc.addToStorage(line);
 
           //Create Elements
           var lineElement = createLine(line);

@@ -33,11 +33,12 @@
           return circleElement;
         }
 
-        function circleEvents(circle, contour) {
+        function circleEvents(circle, contour, circleItem) {
 
           circle.on('dblclick', function() {
             circle.remove();
             contour.remove();
+            mainSvc.removeFromStorage(circleItem);
           })
           .call(d3.drag()
             .on('drag', function() {
@@ -53,7 +54,12 @@
 
                 contour.attr('cx', newCoordinates.x).attr('cy', newCoordinates.y);
               }
-          }));
+            })
+            .on('end', function() {
+              circleItem.point = {x: parseFloat(circle.attr('cx')), y: parseFloat(circle.attr('cy'))};
+
+              mainSvc.editInStorage(circleItem);
+            }));
         }
 
         function createContour(circle) {
@@ -70,7 +76,7 @@
           return circleElement;
         }
 
-        function contourEvents(circle, contour) {
+        function contourEvents(circle, contour, circleItem) {
 
           contour.call(d3.drag().on('drag', function() {
 
@@ -83,26 +89,35 @@
               circle.attr('r', d);
               contour.attr('r', d + 1);
             }
+          })
+          .on('end', function() {
+            circleItem.radius = parseFloat(circle.attr('r'));
+
+            mainSvc.editInStorage(circleItem);
           }));
         }
 
-        function create() {
+        function create(circleItem) {
           
           //Create the object
-          var circle = {radius : 0};
-          while(circle.radius < 20) {
+          var circle = circleItem;
+          if(!circle) {
+            circle = {radius : 0};
+            while(circle.radius < 20) {
 
-            circle = new mainSvc.Circle(scope.canvasWidth, scope.canvasHeight);
+              circle = new mainSvc.Circle(scope.canvasWidth, scope.canvasHeight);
+            }
+
+            circle.index = mainSvc.addToStorage(circle);
           }
 
           //Create Elements
-
           var contourElement = createContour(circle);
           var circleElement = createCircle(circle);
 
           //Add Events
-          circleEvents(circleElement, contourElement);
-          contourEvents(circleElement, contourElement);
+          circleEvents(circleElement, contourElement, circle);
+          contourEvents(circleElement, contourElement, circle);
 
           index++;
         }

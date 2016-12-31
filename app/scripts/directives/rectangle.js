@@ -37,7 +37,7 @@
           return rectangleElement;
         }
 
-        function rectangleEvents(rectangle, top, right, left, bottom) {
+        function rectangleEvents(rectangle, top, right, left, bottom, rectangleItem) {
 
           rectangle.on('dblclick', function() {
             rectangle.remove();
@@ -45,6 +45,7 @@
             right.remove();
             left.remove();
             bottom.remove();
+            mainSvc.removeFromStorage(rectangleItem);
           })
           .call(d3.drag()
             .on('drag', function() {
@@ -57,14 +58,19 @@
               };
               if(newCoordinates.x > borders.left && newCoordinates.x + newCoordinates.width < borders.right && newCoordinates.y > borders.top && newCoordinates.y + newCoordinates.height < borders.bottom) {
 
-              rectangle.attr('x', newCoordinates.x).attr('y', newCoordinates.y);
+                rectangle.attr('x', newCoordinates.x).attr('y', newCoordinates.y);
 
-              top.attr('x1', newCoordinates.x).attr('y1', newCoordinates.y).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y);
-              right.attr('x1', newCoordinates.x).attr('y1', newCoordinates.y).attr('x2', newCoordinates.x).attr('y2', newCoordinates.y + newCoordinates.height);
-              left.attr('x1', newCoordinates.x + newCoordinates.width).attr('y1', newCoordinates.y).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y + newCoordinates.height);
-              bottom.attr('x1', newCoordinates.x).attr('y1', newCoordinates.y + newCoordinates.height).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y + newCoordinates.height);
-            }
-          }));
+                top.attr('x1', newCoordinates.x).attr('y1', newCoordinates.y).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y);
+                right.attr('x1', newCoordinates.x).attr('y1', newCoordinates.y).attr('x2', newCoordinates.x).attr('y2', newCoordinates.y + newCoordinates.height);
+                left.attr('x1', newCoordinates.x + newCoordinates.width).attr('y1', newCoordinates.y).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y + newCoordinates.height);
+                bottom.attr('x1', newCoordinates.x).attr('y1', newCoordinates.y + newCoordinates.height).attr('x2', newCoordinates.x + newCoordinates.width).attr('y2', newCoordinates.y + newCoordinates.height);
+              }
+            })
+            .on('end', function() {
+              rectangleItem.point = {x: parseFloat(rectangle.attr('x')), y: parseFloat(rectangle.attr('y'))};
+
+              mainSvc.editInStorage(rectangleItem);
+            }));
         }
 
         function createLine(point1, point2, cursor, name) {
@@ -82,11 +88,19 @@
           return lineElement;
         }
 
-        function linesEvents(rectangle, top, right, left, bottom) {
+        function endDrag(rectangle, rectangleItem) {
+          rectangleItem.point = {x: parseFloat(rectangle.attr('x')), y: parseFloat(rectangle.attr('y'))};
+          rectangleItem.width = parseFloat(rectangle.attr('width'));
+          rectangleItem.height = parseFloat(rectangle.attr('height'));
+
+          mainSvc.editInStorage(rectangleItem);
+        }
+
+        function linesEvents(rectangle, top, right, left, bottom, rectangleItem) {
 
           top.call(d3.drag()
             .on('drag', function() {
-              
+
               var dy = parseFloat(rectangle.attr('y')) + parseFloat(rectangle.attr('height'));
               var newY = parseFloat(rectangle.attr('y')) + d3.event.dy;
               var newHeight = dy - newY;
@@ -97,11 +111,14 @@
                 right.attr('y1', newY);
                 left.attr('y1', newY);
               }
-          }));
+            })
+            .on('end', function() {
+              endDrag(rectangle, rectangleItem)
+            }));
 
           left.call(d3.drag()
             .on('drag', function() {
-              
+
               var dx = parseFloat(rectangle.attr('x')) + parseFloat(rectangle.attr('width'));
               var newX = parseFloat(rectangle.attr('x')) + d3.event.dx;
               var newWidth = dx - newX;
@@ -112,11 +129,14 @@
                 top.attr('x1', newX);
                 bottom.attr('x1', newX);
               }
-          }));
+            })
+            .on('end', function() {
+              endDrag(rectangle, rectangleItem)
+            }));
 
           right.call(d3.drag()
             .on('drag', function() {
-              
+
               var dx = parseFloat(rectangle.attr('x')) + parseFloat(rectangle.attr('width'));
               var newDx = dx + d3.event.dx;
               var newWidth = newDx - parseFloat(rectangle.attr('x'));
@@ -127,11 +147,14 @@
                 top.attr('x2', newDx);
                 bottom.attr('x2', newDx);
               }
-          }));
+            })
+            .on('end', function() {
+              endDrag(rectangle, rectangleItem)
+            }));
 
           bottom.call(d3.drag()
             .on('drag', function() {
-              
+
               var dy = parseFloat(rectangle.attr('y')) + parseFloat(rectangle.attr('height'));
               var newDy = dy + d3.event.dy;
               var newHeight = newDy - parseFloat(rectangle.attr('y'));
@@ -142,17 +165,25 @@
                 right.attr('y2', newDy);
                 left.attr('y2', newDy);
               }
-          }));
+            })
+            .on('end', function() {
+              endDrag(rectangle, rectangleItem)
+            }));
         }
 
-        function create() {
+        function create(rectangleItem) {
 
           //Create the object
-          var rectangle = {width: 0, height: 0};
+          var rectangle = rectangleItem;
+          if(!rectangleItem) {
+            rectangle = {width: 0, height: 0};
 
-          while(rectangle.width < 20 || rectangle.height < 20) {
+            while(rectangle.width < 20 || rectangle.height < 20) {
 
-            rectangle = new mainSvc.Rectangle(scope.canvasWidth, scope.canvasHeight);
+              rectangle = new mainSvc.Rectangle(scope.canvasWidth, scope.canvasHeight);
+            }
+
+            rectangle.index = mainSvc.addToStorage(rectangle);
           }
 
           //Create Elements
@@ -163,8 +194,8 @@
           var bottomLineElement = createLine({x: rectangle.point.x, y: rectangle.point.y  + rectangle.height}, {x: rectangle.point.x + rectangle.width, y: rectangle.point.y + rectangle.height}, 'n-resize', 'bottom');
 
           //Add Events
-          rectangleEvents(rectangleElement, topLineElement, leftLineElement, rightLineElement, bottomLineElement);
-          linesEvents(rectangleElement, topLineElement, rightLineElement, leftLineElement, bottomLineElement);
+          rectangleEvents(rectangleElement, topLineElement, leftLineElement, rightLineElement, bottomLineElement, rectangle);
+          linesEvents(rectangleElement, topLineElement, rightLineElement, leftLineElement, bottomLineElement, rectangle);
 
           index++;
         }
